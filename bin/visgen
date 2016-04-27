@@ -7,7 +7,7 @@ var conf = require('../package.json');
 program
   .version(conf.version)
   .option('-r, --root [root]', 'Set the root of viscomposer develop workspace, like /path-to-viscomposer/viscomposer')
-  .option('-i, --import [file]', 'import some config file to generate module function into viscomposer')
+  .option('-f, --file [file]', 'import some config file to generate module function into viscomposer')
   .option('-t, --type [type]', 'choose a type among primitive/module/layout')
   .parse(process.argv);
 

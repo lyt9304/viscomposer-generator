@@ -1,7 +1,7 @@
 /**
  * Created by lyt9304 on 16/4/22.
  */
-var Rect = {
+var Rectn = {
 	"name": "Rectn",
 	"basic":{
 		"label": "Rectn",
@@ -48,15 +48,18 @@ var Rect = {
 		"output": [
 			{
 				"type": "geometry",
-				"label": "rect",
-				"varname": "rect"
+				"label": "rectn",
+				"varname": "rectn"
 			},
 			{
 				"type": "transform",
 				"varname": "transform",
 				"label": "transform"
 			}
-		]
+		],
+		"properties":{
+
+		}
 	},
 	"createTemplate": function(){
 		var properties=this.properties;
@@ -71,14 +74,12 @@ var Rect = {
 			'}';
 		return templateStr;
 	},
-	"objectType": "module_primitive",
-	"primitiveType": "rectn",
 	"ui":{
 		"createDom": function(){
 			var that = this;
 			var module = that.module;
 			$(".workflowWindow-sub#" + that.workflowWindow.uuid + ' > .content').append(
-				'<div class="module rect" id="' + that.uuid + '">' +
+				'<div class="module rectn" id="' + that.uuid + '">' +
 				'<div class="title">' +
 				'<span>' + module.label + '</span>' +
 				'<img src="' + (that.module.layoutIcon||viscomposer.app.imgPool["rectangle"]) + '">' +
@@ -91,7 +92,7 @@ var Rect = {
 				'</div></div></div>');
 		},
 		"update": function(){
-			RectPanel.baseClass_.prototype.update.call(this);
+			//RectPanel.baseClass_.prototype.update.call(this);
 			var input = this.module.input;
 			for(var i = 0; i < input.length; i++) {
 				input[i].ui.onSwitch();
@@ -100,3 +101,5 @@ var Rect = {
 		}
 	}
 };
+
+module.exports = Rectn;
