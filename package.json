@@ -1,0 +1,26 @@
+{
+  "name": "viscomposer-generator",
+  "version": "1.0.0",
+  "description": "viscomposer的代码生成注册管理器",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lyt9304/viscomposer-generator.git"
+  },
+  "keywords": [
+    "viscomposer"
+  ],
+  "author": "lyt9304",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lyt9304/viscomposer-generator/issues"
+  },
+  "homepage": "https://github.com/lyt9304/viscomposer-generator",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "json-format": "^0.1.2"
+  }
+}
