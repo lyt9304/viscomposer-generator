@@ -3,15 +3,15 @@
 var program = require('commander');
 var generator = require('../lib/generator');
 var conf = require('../package.json');
+var path = require('path')
 
 program
   .version(conf.version)
   .option('-r, --root [root]', 'Set the root of viscomposer develop workspace, like /path-to-viscomposer/viscomposer')
   .option('-f, --file [file]', 'import some config file to generate module function into viscomposer')
-  .option('-t, --type [type]', 'choose a type among primitive/module/layout')
   .parse(process.argv);
 
 
-generator(program.root, program.file, program.type);
+generator(program.root, path.resolve(process.cwd(), program.file));
 
 

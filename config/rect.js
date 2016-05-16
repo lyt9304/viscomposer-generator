@@ -3,6 +3,7 @@
  */
 var Rectn = {
 	"name": "Rectn",
+	"type": "primitive",
 	"basic":{
 		"label": "Rectn",
 		"funName": "Rectn",

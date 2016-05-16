@@ -1,100 +1,102 @@
-/**
- * Created by lyt9304 on 16/4/22.
- */
-/**
- * Created by lyt9304 on 16/4/22.
- */
-var Rect = {
-	"label": "Filter",
-	"funName": "Filter",
-	"resName": "data_filtered",
-	"input": [
-		{
-			"type": "input",
-			"label": "input",
-			"varname": "input",
-			"value": "properties.x||(properties.underLayout?'layout().x':0)"
-		}
-	],
-	"output": [
-		{
-			"type": "output",
-			"label": "data_filtered",
-			"varname": "data_filtered",
-			"value": "properties.x||(properties.underLayout?'layout().x':0)"
-		}
-	],
-	"properties":{
-		type:'none',
-		cols:{}
+var Filtern = {
+	"dependency":{
+		"Attribute": "src/core/attribute",
+		"dataIndex": "src/data/index"
 	},
-	"createTemplate": function(){
-		var properties=this.properties;
-		//
-		var key=properties.selectedCol;
-		var exp;
-
-		var templateStr=
-			'function(input){\n'+
-			'    var output=[];\n';
-		if(properties.code){
-			templateStr+=
-				'    for(var i=0,ni=input.length;i<ni;++i){\n';
-			for(var key in properties.cols){
-				templateStr+=
-					'        var '+key+'=input[i][\''+key+'\'];\n';
+	"name": "Filtern",
+  "type": "module",
+	"basic":{
+		"label": "Filtern",
+		"funName": "Filtern",
+		"resName": "data_filteredn",
+		"input": [
+			{
+				"type": "input",
+				"label": "input",
+				"varname": "input",
+				"value": "properties.x||(properties.underLayout?'layout().x':0)"
 			}
-			templateStr+=
-				'        if('+properties.code+'){\n'+
-				'            output.push(input[i]);\n'+
-				'        }\n'+
-				'    }\n'+
-				'    return {'+this.output[0].varname+':output};\n'+
-				'}';
-		}else{
-			var col=properties.cols[key];
-			if(col){
-				switch(col._dataType){
-					case Attribute.TYPE.QUANTITATIVE:
-						exp='(value>=('+properties._min+'))&&(value<=('+properties._max+'))';
-						break;
-					case Attribute.TYPE.CATEGORICAL:
-						templateStr+=
-							'    var validValues={';
-						for(var value in col){
-							if(value=='_dataType'||value=='_min'||value=='_max'){
-								continue;
-							}else{
-								if(col[value]){
-									templateStr+='\''+value+'\':true,';
+		],
+		"output": [
+			{
+				"type": "output",
+				"label": "data_filtered",
+				"varname": "data_filtered",
+				"value": "properties.x||(properties.underLayout?'layout().x':0)"
+			}
+		],
+		"properties":{
+			type:'none',
+			cols:{}
+		}
+	},
+	"method":{
+		"createTemplate": function(){
+			var properties=this.properties;
+			//
+			var key=properties.selectedCol;
+			var exp;
+
+			var templateStr=
+				'function(input){\n'+
+				'    var output=[];\n';
+			if(properties.code){
+				templateStr+=
+					'    for(var i=0,ni=input.length;i<ni;++i){\n';
+				for(var key in properties.cols){
+					templateStr+=
+						'        var '+key+'=input[i][\''+key+'\'];\n';
+				}
+				templateStr+=
+					'        if('+properties.code+'){\n'+
+					'            output.push(input[i]);\n'+
+					'        }\n'+
+					'    }\n'+
+					'    return {'+this.output[0].varname+':output};\n'+
+					'}';
+			}else{
+				var col=properties.cols[key];
+				if(col){
+					switch(col._dataType){
+						case Attribute.TYPE.QUANTITATIVE:
+							exp='(value>=('+properties._min+'))&&(value<=('+properties._max+'))';
+							break;
+						case Attribute.TYPE.CATEGORICAL:
+							templateStr+=
+								'    var validValues={';
+							for(var value in col){
+								if(value=='_dataType'||value=='_min'||value=='_max'){
+									continue;
+								}else{
+									if(col[value]){
+										templateStr+='\''+value+'\':true,';
+									}
 								}
 							}
-						}
-						templateStr+='};\n';
-						exp='validValues[value]';
-						break;
-					default:
-						exp='false';
+							templateStr+='};\n';
+							exp='validValues[value]';
+							break;
+						default:
+							exp='false';
+					}
+				}else{
+					exp='false';
 				}
-			}else{
-				exp='false';
+
+				templateStr+=
+					'    for(var i=0,ni=input.length;i<ni;++i){\n'+
+					'        var value=input[i][\''+key+'\'];\n'+
+					'        if('+exp+'){\n'+
+					'            output.push(input[i]);\n'+
+					'        }\n'+
+					'    }\n'+
+					'    return {'+this.output[0].varname+':output};\n'+
+					'}';
 			}
 
-			templateStr+=
-				'    for(var i=0,ni=input.length;i<ni;++i){\n'+
-				'        var value=input[i][\''+key+'\'];\n'+
-				'        if('+exp+'){\n'+
-				'            output.push(input[i]);\n'+
-				'        }\n'+
-				'    }\n'+
-				'    return {'+this.output[0].varname+':output};\n'+
-				'}';
-		}
-
-		return templateStr;
-	},
-	method:{
-		mergeCol: function(thisCol,mergeCol,dataType){
+			return templateStr;
+		},
+		"mergeCol": function(thisCol,mergeCol,dataType){
 			thisCol=thisCol||{'_dataType':Attribute.TYPE.QUANTITATIVE};
 			if(thisCol._dataType||dataType==Attribute.TYPE.CATEGORICAL){
 				thisCol._dataType=dataType;
@@ -111,10 +113,10 @@ var Rect = {
 			}
 			return thisCol;
 		},
-		prepare: function(){
+		"prepare": function(){
 			Filter.baseClass_.prototype.prepare.call(this);
 		},
-		update: function(){
+		"update": function(){
 			var data=this.input[0].getData();
 			var properties=this.properties;
 			var cols=properties.cols;
@@ -147,74 +149,76 @@ var Rect = {
 	"objectType": "module_primitive",
 	"primitiveType": "rect",
 	"ui":{
-		"createDom": function(){
-
-			var that = this;
-			var module = that.module;
-
-			$(".workflowWindow-sub#" + that.workflowWindow.uuid + ' > .content')
-				.append(
-				'<div class="module filter" id="' + that.uuid + '">' +
-				'<div class="title"><span>' + module.label + '</span></div>' +
-				'<div class="hr"></div>' +
-				'<div class="content">' +
-				'<div class="inputs"></div>' +
-				'<div class="outputs"></div>' +
-				'<div class="select"><select></select></div>' +
-				'<div class="option"></div>' +
-				'</div></div>');
-
-			$(that.elSelector + ' .select select').on("change", function(){
-				that.selectedCol = $(this).val();
-				if(that.selectedCol != 'coding') {
-					module.properties.selectedCol=that.selectedCol;
-					module.properties.code=null;
-				}
-				else {
-					$(this.elSelector + ' .codearea').css("display", "block");
-				}
-				that.fillOption();
-			});
-		},
-		"update": function(){
-			var that = this;
-			FilterPanel.baseClass_.prototype.update.call(this);
-
-			var module = that.module;
-			console.log(module);
-			var input = module.input[0];
-			var inputUI = input.ui;
-			inputUI.linkOn = true;
-			inputUI.update();
-
-			if(!input.linkFrom){
-				$(that.elSelector + ' .content .select select').html('');
-				$(that.elSelector + ' .option').html('');
-			}
-
-			else
-			{
-				if(!that.selectedCol){
-					$(that.elSelector + ' .content .select select').html('');
-					var flag = false, first = null;
-					for(var key in module.properties.cols)
-					{
-						if(!flag){
-							first = key;
-							flag = true;
-						}
-						$(that.elSelector + ' .content .select select').append('<option>' + key + '</option>');
-					}
-					$(that.elSelector + ' .content .select select').append('<option>coding</option>');
-
-					that.selectedCol = first;
-					module.properties.selectedCol = first;
-					that.fillOption();
-
-				}
-			}
-		},
+		"productive": true,
+		"pos": [200,100],
 		"method":{
+			"createDom": function(){
+
+				var that = this;
+				var module = that.module;
+
+				$(".workflowWindow-sub#" + that.workflowWindow.uuid + ' > .content')
+					.append(
+						'<div class="module filter" id="' + that.uuid + '">' +
+						'<div class="title"><span>' + module.label + '</span></div>' +
+						'<div class="hr"></div>' +
+						'<div class="content">' +
+						'<div class="inputs"></div>' +
+						'<div class="outputs"></div>' +
+						'<div class="select"><select></select></div>' +
+						'<div class="option"></div>' +
+						'</div></div>');
+
+				$(that.elSelector + ' .select select').on("change", function(){
+					that.selectedCol = $(this).val();
+					if(that.selectedCol != 'coding') {
+						module.properties.selectedCol=that.selectedCol;
+						module.properties.code=null;
+					}
+					else {
+						$(this.elSelector + ' .codearea').css("display", "block");
+					}
+					that.fillOption();
+				});
+			},
+			"update": function(){
+				var that = this;
+				FilterPanel.baseClass_.prototype.update.call(this);
+
+				var module = that.module;
+				console.log(module);
+				var input = module.input[0];
+				var inputUI = input.ui;
+				inputUI.linkOn = true;
+				inputUI.update();
+
+				if(!input.linkFrom){
+					$(that.elSelector + ' .content .select select').html('');
+					$(that.elSelector + ' .option').html('');
+				}
+
+				else
+				{
+					if(!that.selectedCol){
+						$(that.elSelector + ' .content .select select').html('');
+						var flag = false, first = null;
+						for(var key in module.properties.cols)
+						{
+							if(!flag){
+								first = key;
+								flag = true;
+							}
+							$(that.elSelector + ' .content .select select').append('<option>' + key + '</option>');
+						}
+						$(that.elSelector + ' .content .select select').append('<option>coding</option>');
+
+						that.selectedCol = first;
+						module.properties.selectedCol = first;
+						that.fillOption();
+
+					}
+				}
+			},
 			"fillOption": function(){
 				var that = this;
 				if(that.selectedCol) {
@@ -313,4 +317,5 @@ var Rect = {
 	}
 };
 
+module.exports = Filtern;
 //store load
