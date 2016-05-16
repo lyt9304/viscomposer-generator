@@ -37,13 +37,13 @@ var Rectn = {
 				"type": "map",
 				"label": "color",
 				"varname": "color",
-				"value": "properties.color||'#3366dd'"
+				"value": "properties.color||'\"#3366dd\"'"
 			},
 			{
 				"type": "map",
 				"label": "style",
 				"varname": "style",
-				"value": "''"
+				"value": "'\"\"'"
 			}
 		],
 		"output": [
@@ -98,7 +98,7 @@ var Rectn = {
 					'</div></div></div>');
 			},
 			"update": function(){
-				//RectPanel.baseClass_.prototype.update.call(this);
+				RectnPanel.baseClass_.prototype.update.call(this);
 				var input = this.module.input;
 				for(var i = 0; i < input.length; i++) {
 					input[i].ui.onSwitch();

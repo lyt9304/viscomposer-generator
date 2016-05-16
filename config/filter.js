@@ -5,6 +5,7 @@ var Filtern = {
 	},
 	"name": "Filtern",
   "type": "module",
+  "img": "resource/image/element/module/Filter.png",
 	"basic":{
 		"label": "Filtern",
 		"funName": "Filtern",
@@ -13,16 +14,14 @@ var Filtern = {
 			{
 				"type": "input",
 				"label": "input",
-				"varname": "input",
-				"value": "properties.x||(properties.underLayout?'layout().x':0)"
+				"varname": "input"
 			}
 		],
 		"output": [
 			{
 				"type": "output",
 				"label": "data_filtered",
-				"varname": "data_filtered",
-				"value": "properties.x||(properties.underLayout?'layout().x':0)"
+				"varname": "data_filtered"
 			}
 		],
 		"properties":{
@@ -114,7 +113,7 @@ var Filtern = {
 			return thisCol;
 		},
 		"prepare": function(){
-			Filter.baseClass_.prototype.prepare.call(this);
+			Filtern.baseClass_.prototype.prepare.call(this);
 		},
 		"update": function(){
 			var data=this.input[0].getData();
@@ -183,7 +182,7 @@ var Filtern = {
 			},
 			"update": function(){
 				var that = this;
-				FilterPanel.baseClass_.prototype.update.call(this);
+				FilternPanel.baseClass_.prototype.update.call(this);
 
 				var module = that.module;
 				console.log(module);
