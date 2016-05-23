@@ -10,3 +10,6 @@ viscomposer的代码生成注册管理器
 
 ./bin/visgen -r /Users/lyt9304/workspace/myVisual -f ./config/rect
 ./bin/visgen -r /Users/lyt9304/workspace/myVisual -f ./config/filter
+
+./bin/visgen -r /Users/lyt9304/workspace/myVisual --uninstall Rectn -t primitive
+./bin/visgen -r /Users/lyt9304/workspace/myVisual --uninstall Filtern -t module
