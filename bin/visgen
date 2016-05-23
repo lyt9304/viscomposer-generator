@@ -3,8 +3,10 @@
 var program = require('commander');
 var generator = require('../lib/generator');
 var uninstaller = require('../lib/uninstaller');
+var browserify = require('browserify');
 var conf = require('../package.json');
 var path = require('path');
+var fs = require('fs');
 
 program
   .version(conf.version)
@@ -20,4 +22,5 @@ if(program.uninstall){
   generator(program.root, path.resolve(process.cwd(), program.file));
 }
 
-
+var b = browserify(path.join(program.root, "src", "app", "app.js"));
+b.bundle().pipe(fs.createWriteStream(path.join(program.root, "js", "app.js")));
