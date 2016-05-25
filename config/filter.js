@@ -1,4 +1,4 @@
-var Filtern = {
+var viscomposerModule = {
 	"dependency":{
 		"Attribute": "src/core/attribute",
 		"dataIndex": "src/data/index"
@@ -316,5 +316,5 @@ var Filtern = {
 	}
 };
 
-module.exports = Filtern;
+module.exports = viscomposerModule;
 //store load

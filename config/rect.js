@@ -1,7 +1,4 @@
-/**
- * Created by lyt9304 on 16/4/22.
- */
-var Rectn = {
+var viscomposerModule = {
 	"name": "Rectn",
 	"type": "primitive",
 	"basic":{
@@ -109,4 +106,4 @@ var Rectn = {
 	}
 };
 
-module.exports = Rectn;
+module.exports = viscomposerModule;
