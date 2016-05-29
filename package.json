@@ -24,6 +24,7 @@
     "commander": "^2.9.0",
     "formidable": "^1.0.17",
     "json-format": "^0.1.2",
+    "node-browserify": "^1.0.0",
     "node-uuid": "^1.4.7"
   }
 }

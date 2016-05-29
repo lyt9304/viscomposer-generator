@@ -3,6 +3,7 @@ var query = require('querystring');
 var uuid = require('node-uuid');
 var path = require('path');
 var fs = require('fs');
+var browserify = require('browserify');
 
 var log = require('./lib/log');
 
@@ -32,6 +33,7 @@ http.createServer(function(req, res) {
 
     var visRoot = "/Users/lyt9304/Sites/myVisual";
     var type = viscomposerModule["type"];
+    var moduleName = viscomposerModule["name"];
 
     //log.debug("importedConfig:" + jsonFormat(importedConfig, formatConfig));
     log.debug("type:" + type);
@@ -49,10 +51,20 @@ http.createServer(function(req, res) {
       return;
     }
 
-    var classStr = moduleHandler(viscomposerModule, pathMap["module"], visRoot);
+    var classStr = moduleHandler(viscomposerModule, pathMap["module"], visRoot, true);
+    var classPath = path.join(pathMap[type], moduleName+".tmp.js");
     log.debug(classStr);
-    var panelStr = panelHandler(viscomposerModule);
+    var panelStr = panelHandler(viscomposerModule, pathMap["panel"], true);
+    var panelPath = path.join(pathMap["panel"], moduleName+".tmp.js");
     log.debug(panelStr);
+
+    fs.writeFileSync(classPath, classStr);
+    fs.writeFileSync(panelPath, panelStr);
+
+    var b = browserify([panelPath, classPath],{
+      debug:true
+    });
+    b.bundle().pipe(fs.createWriteStream('./tmp/bundle.js'));
 
     var result = {
       status:200,
