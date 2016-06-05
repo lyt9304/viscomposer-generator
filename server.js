@@ -53,28 +53,44 @@ http.createServer(function(req, res) {
 
     var classStr = moduleHandler(viscomposerModule, pathMap["module"], visRoot, true);
     var classPath = path.join(pathMap[type], moduleName+".tmp.js");
-    log.debug(classStr);
+    //log.debug(classStr);
     var panelStr = panelHandler(viscomposerModule, pathMap["panel"], true);
     var panelPath = path.join(pathMap["panel"], moduleName+".tmp.js");
-    log.debug(panelStr);
+    //log.debug(panelStr);
 
     fs.writeFileSync(classPath, classStr);
     fs.writeFileSync(panelPath, panelStr);
 
-    var b = browserify([panelPath, classPath],{
-      debug:true
+    var b = browserify([classPath,panelPath]);
+    var stream =  b.bundle();
+        //.pipe(fs.createWriteStream('./tmp/bundle.js'));
+
+    var codeStr = "";
+		var insertCodeStr = [
+			"viscomposer.app.addItem('"+type+"', '"+moduleName.toLowerCase()+"', viscomposer.extension."+moduleName+")",
+			"viscomposer.app.addItem('panel', '"+moduleName+"',viscomposer.extension."+moduleName+"Panel)"
+		].join("\n");
+
+    stream.on("data", function(chunk){
+      codeStr += chunk;
     });
-    b.bundle().pipe(fs.createWriteStream('./tmp/bundle.js'));
 
-    var result = {
-      status:200,
-      code:"haha"
-    };
-    res.statusCode = 200;
-    res.setHeader("Access-Control-Allow-Origin", "*");
-    res.write(JSON.stringify(result));
-    res.end();
+    stream.on("end", function(){
+      console.log("=========in end========");
 
+			codeStr = codeStr.replace("= Module.Factory(", "= viscomposer.app.ModuleFactory(");
+
+      var result = {
+        status:200,
+				name: moduleName,
+				type: type,
+        code:codeStr+insertCodeStr
+      };
+      res.statusCode = 200;
+      res.setHeader("Access-Control-Allow-Origin", "*");
+      res.write(JSON.stringify(result));
+      res.end();
+    });
   });
 }).listen(port);
 
